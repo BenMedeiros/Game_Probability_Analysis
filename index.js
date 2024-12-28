@@ -12,7 +12,7 @@ function convertToDecimal(inputStr) {
 }
 
 
-function runGameOutcomes(pointsToWin) {
+function runGameOutcomes(outcomes, pointsToWin) {
     function bothSidesScored(goals, goalsAgainst, seq) {
         let game_scored = {
             goals: goals + 1,
@@ -53,23 +53,59 @@ function runGameOutcomes(pointsToWin) {
 
 
 
-const prob_goal = .4;
-const prob_scored_on = 1 - prob_goal;
-const outcomes = [];
-runGameOutcomes(2);
+const finalWinProbs = [];
+const pointsToWinStart = 1;
+const pointsToWinEnd = 10;
 
-outcomes.forEach(outcome => {
-    outcome.probReadable = convertToDecimal(prob_goal) + toSuperscript(outcome.goals) + convertToDecimal(prob_scored_on) + toSuperscript(outcome.goalsAgainst);
-    outcome.prob = Math.pow(prob_goal, outcome.goals) * Math.pow(prob_scored_on, outcome.goalsAgainst);
-    outcome.prob = Math.round(outcome.prob * 10000) / 10000;
+// there are alternative computations for optimizing high game scenarios
+if(pointsToWinEnd > 13) throw new Error('That will take too long to compute!');
+
+for (let pointsToWin = pointsToWinStart; pointsToWin < pointsToWinEnd; pointsToWin++) {
+    const prob_goal = .4;
+    const prob_scored_on = 1 - prob_goal;
+    const outcomes = [];
+    // const pointsToWin = 5;
+    console.log('Prob Goal: ', prob_goal);
+    console.log('Points to Win: ', pointsToWin);
+    runGameOutcomes(outcomes, pointsToWin);
+
+    outcomes.forEach(outcome => {
+        outcome.probReadable = convertToDecimal(prob_goal) + toSuperscript(outcome.goals) + convertToDecimal(prob_scored_on) + toSuperscript(outcome.goalsAgainst);
+        outcome.prob = Math.pow(prob_goal, outcome.goals) * Math.pow(prob_scored_on, outcome.goalsAgainst);
+        // outcome.prob = Math.round(outcome.prob * 100000) / 100000;
+    });
+
+    // console.table(outcomes);
+
+    console.log('Total Probabilities: ', outcomes.reduce((acc, outcome) => {
+        return acc + outcome.prob;
+    }, 0));
+
+
+    const probWin = outcomes.reduce((acc, outcome) => {
+        return acc + (outcome.state === 'W' ? 1 : 0) * outcome.prob;
+    }, 0);
+    console.log('Prob Win: ', probWin);
+    finalWinProbs.push(probWin);
+
+    const probWinReadableCount = outcomes.reduce((acc, outcome) => {
+        if (outcome.state === 'W') acc[outcome.probReadable] = (acc[outcome.probReadable] || 0) + 1;
+        return acc;
+    }, {});
+
+    console.log('Count Prob Win', probWinReadableCount);
+    console.log();
+}
+
+console.log('Final Win Probs: ', finalWinProbs.map(prob => Math.round(prob * 100000) / 100000));
+
+const dFinalWinProbs = finalWinProbs.map((prob, i) => {
+    return i === 0 ? prob : prob - finalWinProbs[i - 1];
 });
 
-console.table(outcomes);
+const ddFinalWinProbs = dFinalWinProbs.map((delta, i) => {
+    return i === 0 ? delta : delta - dFinalWinProbs[i - 1];
+})
 
-console.log('Total Probabilities: ', outcomes.reduce((acc, outcome) => {
-    return acc + outcome.prob;
-}, 0));
-
-console.log('Expected Value: ', outcomes.reduce((acc, outcome) => {
-    return acc + (outcome.state === 'W' ? 1 : 0) * outcome.prob;
-}, 0));
+// console.log('Delta Final Win Probs: ', dFinalWinProbs.map(prob => Math.round(prob * 100000) / 100000));
+// console.log('Delta Delta Final Win Probs: ', ddFinalWinProbs.map(prob => Math.round(prob * 100000) / 100000));

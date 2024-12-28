@@ -1,0 +1,29 @@
+1,2 
+1,3,6 
+1,4,10,20 
+1,5,15,35,70 
+1,6,21,56,126,252 
+1,7,28,84,210,462,924
+
+You're looking at a fascinating array of triangular numbers arranged in Pascal's Triangle. Pascal's Triangle is a geometric arrangement of binomial coefficients, and each row of the triangle corresponds to the coefficients of the binomial expansion.
+
+Here's a breakdown:
+
+The first row is (n choose 0).
+
+The second row is (n choose 0), (n choose 1).
+
+The third row is (n choose 0), (n choose 1), (n choose 2).
+
+The fourth row is (n choose 0), (n choose 1), (n choose 2), (n choose 3).
+
+So on and so forth. The numbers represent combinations and are calculated using the binomial coefficient formula:
+
+(n choose k) = n! / (k! * (n - k)!)
+
+
+
+For prob_goal = .4, win probs across game lengths:
+Final Win Probs:  [
+    0.4,   0.352,  0.31744, 0.28979,  0.26657,  0.2465,  0.22884,  0.2131,  0.19894, 0.18609, 0.17438, 0.16364
+]
