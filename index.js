@@ -1,8 +1,20 @@
+/**
+ * Convert a number to its superscript representation.
+ *
+ * @param {number} num - The number to convert.
+ * @returns {string} The superscript representation of the number.
+ */
 const toSuperscript = (num) => {
     const superscripts = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     return num.toString().split('').map(char => superscripts[char] || char).join('');
 };
 
+/**
+ * Convert a string to its decimal representation.
+ *
+ * @param {string} inputStr - The input string to convert.
+ * @returns {string} The decimal representation of the input string.
+ */
 function convertToDecimal(inputStr) {
     inputStr = inputStr.toString();
     if (inputStr.startsWith('0.')) {
@@ -11,7 +23,12 @@ function convertToDecimal(inputStr) {
     return inputStr;
 }
 
-
+/**
+ * Run game outcomes and calculate probabilities.
+ *
+ * @param {Array} outcomes - The array to store game outcomes.
+ * @param {number} pointsToWin - The number of points required to win the game.
+ */
 function runGameOutcomes(outcomes, pointsToWin) {
     function bothSidesScored(goals, goalsAgainst, seq) {
         let game_scored = {
